@@ -15,15 +15,17 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "DHFeed.h"
 
-@interface DHPreferences : UITableViewController
+@interface DHCheatRepoList : NSObject
 
-@property (assign) IBOutlet UISwitch *updatesSwitch;
-@property (assign) BOOL didSetUpdateLabelBefore;
+@property (retain) NSDictionary *json;
 
-- (IBAction)updatesSwitchValueChanged:(id)sender;
-- (IBAction)getDashForMacOS:(id)sender;
-- (NSString *)segueIdentifierForIndexPath:(NSIndexPath *)indexPath;
++ (DHCheatRepoList *)sharedCheatRepoList;
+- (NSMutableArray *)allCheatsheets;
+- (NSString *)downloadURLForEntry:(DHFeed *)entry;
+- (NSString *)versionForEntry:(DHFeed *)entry;
+- (void)reload;
 
 @end

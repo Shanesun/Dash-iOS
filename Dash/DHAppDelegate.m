@@ -17,6 +17,8 @@
 
 #import "DHAppDelegate.h"
 #import "DHDocsetDownloader.h"
+#import "DHUserRepo.h"
+#import "DHCheatRepo.h"
 #import "DHDocsetTransferrer.h"
 #import "DHDocsetManager.h"
 #import "DHTarixProtocol.h"
@@ -83,6 +85,8 @@
 //    self.window.tintColor = [UIColor purpleColor];
     [DHDocsetDownloader sharedDownloader];
     [DHDocsetTransferrer sharedTransferrer];
+    [DHUserRepo sharedUserRepo];
+    [DHCheatRepo sharedCheatRepo];
     [DHRemoteServer sharedServer];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clipboardChanged:) name:UIPasteboardChangedNotification object:nil];
     return YES;
@@ -139,6 +143,14 @@
         if(![[DHDocsetDownloader sharedDownloader] alertIfUpdatesAreScheduled])
         {
             [[DHDocsetDownloader sharedDownloader] backgroundCheckForUpdatesIfNeeded];
+            if(![[DHUserRepo sharedUserRepo] alertIfUpdatesAreScheduled])
+            {
+                [[DHUserRepo sharedUserRepo] backgroundCheckForUpdatesIfNeeded];
+                if(![[DHCheatRepo sharedCheatRepo] alertIfUpdatesAreScheduled])
+                {
+                    [[DHCheatRepo sharedCheatRepo] backgroundCheckForUpdatesIfNeeded];
+                }
+            }
         }
     }
 }
@@ -159,6 +171,16 @@
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         completionHandler();
     }];
+}
+
+#pragma mark - UIStateRestoration
+
+- (BOOL)application:(UIApplication *)application shouldSaveApplicationState:(NSCoder *)coder {
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application shouldRestoreApplicationState:(NSCoder *)coder {
+    return YES;
 }
 
 - (void)setDoNotBackUp
